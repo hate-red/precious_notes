@@ -5,12 +5,15 @@ build/
 dist/
 wheels/
 *.egg-info
+.ruff_cache
 
 # Virtual environments
 .venv
 
 # Audio
-audio.wav
+*.wav
+*.mp3
+*.m4a
 
 # Transcription
 transcription.txt
