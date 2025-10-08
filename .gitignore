@@ -9,11 +9,19 @@ wheels/
 
 # Virtual environments
 .venv
+.env
+
+# Alembic
+versions
 
 # Audio
 *.wav
-*.mp3
+audio.mp3
 *.m4a
 
 # Transcription
+transcriptions
 transcription.txt
+
+# Summary
+model_response.md
