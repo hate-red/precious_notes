@@ -3,7 +3,7 @@ from sqlalchemy import ForeignKey
 from typing import Optional
 
 from database import Base
-
+from users.models import User
 
 class Sentiment(Base):
     __tablename__ = 'sentiments'
@@ -19,7 +19,7 @@ class Sentiment(Base):
     # A string of floats like '0.2 -0.1 0.5 ..'
     sentiments: Mapped[str]
 
-    user: Mapped['User'] = relationship('User') # type: ignore # noqa: F821
+    user: Mapped[User] = relationship('User') # type: ignore # noqa: F821
 
 
     def __str__(self) -> str:
