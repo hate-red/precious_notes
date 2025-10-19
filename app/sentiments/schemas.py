@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 class SentimentPublic(BaseModel):
     """
-    Defines response model schema
+    Defines response schema
     """
     
     id: int
@@ -23,17 +23,30 @@ class SentimentPost(BaseModel):
 
 class SentimentPut(BaseModel):
     """
-    Defines PUT request model schema
+    Defines PUT request schema
     source text here is an updated text that we want to reanalyze
     """
 
     id: int
-    source_text: str
+    updated_text: str
 
 
-class SentimentById(BaseModel):
+class SentimentDelete(BaseModel):
     """
-    Defines request schema for getting sentiments by text id 
+    Defines DELETE request schema 
     """
+    
+    id: int | None = None
+    source_text: str | None = None
 
-    id: int
+
+    def to_dict(self) -> dict:
+        """
+        Transforms model to a dict,
+        gets rid of all fields with value None.
+        This is important so that delete operation works correctly
+        """
+        _ = {'id': self.id, 'source_text': self.source_text}
+        transformed_model = {key: value for key, value in _.items() if value is not None}
+
+        return transformed_model

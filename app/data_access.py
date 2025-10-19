@@ -74,10 +74,8 @@ class BaseDA:
                 except SQLAlchemyError as e:
                     await session.rollback()
                     raise e
-                
-        instance = result.scalar_one()
 
-        return instance
+        return result.rowcount # type: ignore
 
 
     @classmethod
@@ -93,4 +91,4 @@ class BaseDA:
                     await session.rollback()
                     raise e
                 
-        return result.rowcount
+        return result.rowcount # type: ignore
