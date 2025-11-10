@@ -5,10 +5,11 @@ from database import Base
 
 class User(Base):
     __tablename__ = 'users'
-
+    extend_existing=True
+    
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(unique=True)
     password: Mapped[str]
 
     def __str__(self) -> str:
-        return self.email
+        return f'Email: {self.email}'

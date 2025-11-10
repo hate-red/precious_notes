@@ -9,14 +9,6 @@ router = APIRouter(prefix='/sentiment')
 analyzer = SentimentAnalyzer()
 
 
-def format_instance(instance) -> SentimentPublic:
-    sentiments_string = instance.sentiments
-    sentiments = [float(sent) for sent in sentiments_string.split()]
-    instance.sentiments = sentiments
-    
-    return instance
-
-
 @router.get('/text/{id}')
 async def get_sentiment(id: int) -> SentimentPublic:
     """
@@ -25,8 +17,6 @@ async def get_sentiment(id: int) -> SentimentPublic:
 
     instance = await SentimentDA.get(id=id)
     if instance:
-        instance = format_instance(instance)
-
         return instance
 
     raise HTTPException(status.HTTP_404_NOT_FOUND)
@@ -42,24 +32,21 @@ async def analyze_sentiment(request_body: SentimentPost) -> SentimentPublic:
 
     instance = await SentimentDA.get(**request_body.model_dump())
 
-    # if such text was analyzed before then using its analysis result
-    if instance:
-        sentiments = instance.sentiments
-    else:
+    # processing text if it was not analyzed before
+    if not instance:
         sentiments = analyzer.estimate_sentiment(request_body.source_text)
         sentiments_string = ' '.join(map(str, sentiments))
         
         # adding another filed to dict to create new database entry
         values = request_body.model_dump() | {'sentiments': sentiments_string}
         instance = await SentimentDA.create(**values)
-
-    instance = format_instance(instance)    
     
+    # otherwize return existing analysis result
     return instance
 
 
 @router.put('/text')
-async def update_sentiment(request_body: SentimentPut):
+async def update_sentiment(request_body: SentimentPut) -> SentimentPublic:
     """
     Processes updated text, 
     new sentiment analysis result is updated 
@@ -76,8 +63,7 @@ async def update_sentiment(request_body: SentimentPut):
     is_updated = await SentimentDA.update(filter_by, **values)
     
     if is_updated:
-        instance = await SentimentDA.get(**filter_by)
-        instance = format_instance(instance) 
+        instance = await SentimentDA.get(**filter_by) 
 
         return instance
 
@@ -85,7 +71,11 @@ async def update_sentiment(request_body: SentimentPut):
 
 
 @router.delete('/text')
-async def delete_sentiment(request_body: SentimentDelete):
+async def delete_sentiment(request_body: SentimentDelete) -> dict:
+    """
+    Deletes sentiment analysis by a given id or a source_text
+    """
+    
     is_deleted = await SentimentDA.delete(**request_body.to_dict())
 
     if is_deleted:

@@ -14,14 +14,4 @@ wheels/
 # Alembic
 versions
 
-# Audio
-*.wav
-audio.mp3
-*.m4a
-
-# Transcription
 transcriptions
-transcription.txt
-
-# Summary
-model_response.md

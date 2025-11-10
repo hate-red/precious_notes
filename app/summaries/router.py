@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from .schemas import SummaryPublic, SummaryPost, SummaryUpdate, SummaryDelete
 from .summarize import summarize
 
+
 router = APIRouter(prefix='/summary')
 
 
