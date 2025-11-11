@@ -18,14 +18,15 @@ class SentimentDA(BaseDA): # type: ignore
         if instance:
             instance = format_instance(instance)
         return instance
-        
+
 
     @classmethod
     async def get_or_create(cls, **filter_by):
         instance = super().get_or_create(**filter_by)
         instance = format_instance(instance)
         return instance
-    
+
+
     @classmethod
     async def create(cls, **filter_by):
         instance = await super().create(**filter_by)

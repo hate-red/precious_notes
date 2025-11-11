@@ -5,7 +5,7 @@ from .analyzer import SentimentAnalyzer
 from .data_access import SentimentDA
 
 
-router = APIRouter(prefix='/sentiment')
+router = APIRouter(prefix='/sentiment', tags=['Sentiments'])
 analyzer = SentimentAnalyzer()
 
 

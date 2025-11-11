@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 class SentimentPublic(BaseModel):
     """
-    Defines response schema
+    Defines response schema for all sentiment endpoints
     """
     
     id: int
