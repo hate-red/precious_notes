@@ -6,7 +6,7 @@ from .auth import get_password_hash, create_access_token, authenticate_user
 from .dependencies import get_current_user
 
 
-router = APIRouter(prefix='/user')
+router = APIRouter(prefix='/user', tags=['Users'])
 
 
 @router.post('/signup', summary='Registers user')
@@ -67,7 +67,7 @@ async def get_user(user: UserPublic = Depends(get_current_user)) -> UserPublic:
 
 @router.put('/', summary='Changes user information')
 async def update_user(user_id: int, user_info: UserUpdate) -> UserPublic:
-    check = await UserDA.update(filter_by={'id': user_id}, **user_info.model_dump())
+    check = await UserDA.update(filter_by={'id': user_id}, **user_info.to_dict())
 
     if not check:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Error when updating user information')

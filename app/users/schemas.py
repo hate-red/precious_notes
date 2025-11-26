@@ -39,6 +39,15 @@ class UserUpdate(BaseModel):
     username: str | None = None
     email: EmailStr | None = None
 
+    def to_dict(self):
+        data = {
+            'username': self.username,
+            'email': self.email,
+        }
+        filtered_data = {key: value for key, value in data.items() if value is not None}
+
+        return filtered_data
+
 
 class UserDelete(BaseModel):
     id: int | None = None

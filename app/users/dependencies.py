@@ -1,7 +1,7 @@
 from fastapi import Request, HTTPException, status, Depends
 from jose import jwt, JWTError
 
-from app.config import get_auth_data
+from config import get_auth_data
 from .data_access import UserDA
 
 
