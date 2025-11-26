@@ -1,9 +1,86 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status, Response, Depends
+
+from .data_access import UserDA
+from .schemas import UserPublic, UserFilter, UserSignUp, UserSignIn, UserUpdate, UserDelete
+from .auth import get_password_hash, create_access_token, authenticate_user
+from .dependencies import get_current_user
 
 
-router = APIRouter(prefix='/users')
+router = APIRouter(prefix='/user')
 
 
-@router.get('/profile')
-def get_user():
-    return {}
+@router.post('/signup', summary='Registers user')
+async def signup(user_info: UserSignUp) -> dict:
+    is_username_exists = await UserDA.get(username=user_info.username)
+    if is_username_exists:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail='User with this username already exists'
+        )
+
+    is_email_exists = await UserDA.get(email=user_info.email)
+    if is_email_exists:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail='User with this email already exists'
+        )
+
+    user_dict = user_info.model_dump()
+    user_dict['password'] = get_password_hash(user_info.password)
+    await UserDA.create(**user_dict)
+
+    return {'message': 'User was successfully signed up'}
+
+
+@router.post('/signin', summary='Logs user in')
+async def signin(response: Response, user_info: UserSignIn) -> dict:
+    user = await authenticate_user(email=user_info.email, password=user_info.password)
+
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid email or password')
+
+    access_token = create_access_token({'sub': str(user.id)})
+    response.set_cookie(key='user_access_token', value=access_token, httponly=True, secure=True)
+    return {'access_token': access_token, 'refresh_token': None}
+
+
+@router.post('/logout', summary='Logs user out')
+async def logout(response: Response) -> dict:
+    response.delete_cookie(key='user_access_token')
+    return {'message': 'User was logged out'}
+
+
+@router.post('/find', summary='Finds users')
+async def find_users(filter_by: UserFilter) -> list[UserPublic]:
+    users = await UserDA.filter(**filter_by.to_dict())
+
+    if not users:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Not found')
+
+    return users
+
+
+@router.get('/', summary='Gets user profile')
+async def get_user(user: UserPublic = Depends(get_current_user)) -> UserPublic:
+    return user
+
+
+@router.put('/', summary='Changes user information')
+async def update_user(user_id: int, user_info: UserUpdate) -> UserPublic:
+    check = await UserDA.update(filter_by={'id': user_id}, **user_info.model_dump())
+
+    if not check:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Error when updating user information')
+
+    user = await UserDA.get(id=user_id)
+    return user
+
+
+@router.delete('/', summary='Deletes user')
+async def delete_user(user: UserDelete) -> dict:
+    check = await UserDA.delete(**user.to_dict())
+
+    if not check:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Error when deleting user')
+
+    return {'message': 'User was successfully deleted'}
