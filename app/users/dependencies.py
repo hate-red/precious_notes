@@ -1,8 +1,8 @@
 from fastapi import Request, HTTPException, status, Depends
 from jose import jwt, JWTError
 
-from config import get_auth_data
-from .data_access import UserDA
+from app.config import get_auth_data
+from app.users.data_access import UserDA
 
 
 def get_token(request: Request):

@@ -2,8 +2,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
 from typing import Optional
 
-from database import Base
-from users.models import User
+from app.database import Base
+from app.users.models import User
 
 
 class Sentiment(Base):

@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException, status, Response, Depends
 
-from .data_access import UserDA
-from .schemas import UserPublic, UserFilter, UserSignUp, UserSignIn, UserUpdate, UserDelete
-from .auth import get_password_hash, create_access_token, authenticate_user
-from .dependencies import get_current_user
+from app.users.data_access import UserDA
+from app.users.schemas import UserPublic, UserFilter, UserSignUp, UserSignIn, UserUpdate, UserDelete
+from app.users.auth import get_password_hash, create_access_token, authenticate_user
+from app.users.dependencies import get_current_user
 
 
 router = APIRouter(prefix='/user', tags=['Users'])

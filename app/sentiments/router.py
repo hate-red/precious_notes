@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, status
 
-from .schemas import SentimentPublic, SentimentPost, SentimentPut, SentimentDelete
-from .analyzer import SentimentAnalyzer
-from .data_access import SentimentDA
+from app.sentiments.schemas import SentimentPublic, SentimentPost, SentimentPut, SentimentDelete
+from app.sentiments.analyzer import SentimentAnalyzer
+from app.sentiments.data_access import SentimentDA
 
 
 router = APIRouter(prefix='/sentiment', tags=['Sentiments'])

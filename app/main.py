@@ -1,15 +1,14 @@
 from fastapi import FastAPI
 
 # routers
-from sentiments.router import router as sentiment_router
-from summaries.router import router as summaries_router
-from users.router import router as users_router
-
+from app.sentiments.router import router as sentiment_router
+from app.summaries.router import router as summaries_router
+from app.users.router import router as users_router
 
 app = FastAPI()
 
 
-@app.get('/')
+@app.get('/', tags=['Home'])
 def index():
     return {'message': 'Welcome!'}
 

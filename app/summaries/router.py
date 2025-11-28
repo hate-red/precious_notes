@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, status
 
-from .schemas import SummaryPublic, SummaryPost, SummaryUpdate, SummaryDelete
-from .summarize import summarize
-from .data_access import SummaryDA
+from app.summaries.schemas import SummaryPublic, SummaryPost, SummaryUpdate, SummaryDelete
+from app.summaries.summarize import summarize
+from app.summaries.data_access import SummaryDA
 
 
 router = APIRouter(prefix='/summary', tags=['Summaries'])

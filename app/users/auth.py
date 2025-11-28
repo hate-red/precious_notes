@@ -4,8 +4,8 @@ from datetime import datetime, timezone, timedelta
 
 from pydantic import EmailStr
 
-from config import get_auth_data
-from .data_access import UserDA
+from app.config import get_auth_data
+from app.users.data_access import UserDA
 
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')

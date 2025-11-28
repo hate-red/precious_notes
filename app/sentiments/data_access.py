@@ -1,6 +1,6 @@
-from data_access import BaseDA
-from .models import Sentiment
-from .schemas import SentimentPublic
+from app.data_access import BaseDA
+from app.sentiments.models import Sentiment
+from app.sentiments.schemas import SentimentPublic
 
 
 def format_instance(instance) -> SentimentPublic:
