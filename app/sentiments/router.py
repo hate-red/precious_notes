@@ -65,7 +65,7 @@ async def update_sentiment(request_body: SentimentPut) -> SentimentPublic:
     if is_updated:
         instance = await SentimentDA.get(**filter_by) 
 
-        return instance
+        return instance # type: ignore
 
     raise HTTPException(status.HTTP_304_NOT_MODIFIED)
 

@@ -39,7 +39,7 @@ async def update_summary(request_body: SummaryUpdate) -> SummaryUpdate:
     
     if is_updated:
         instance = await SummaryDA.get(**filter_by)
-        return instance
+        return instance # type: ignore
     
     raise HTTPException(status.HTTP_304_NOT_MODIFIED)
 

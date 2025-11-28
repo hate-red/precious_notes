@@ -57,7 +57,7 @@ async def find_users(filter_by: UserFilter) -> list[UserPublic]:
     if not users:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Not found')
 
-    return users
+    return users # type: ignore
 
 
 @router.get('/', summary='Gets user profile')
@@ -73,7 +73,7 @@ async def update_user(user_id: int, user_info: UserUpdate) -> UserPublic:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Error when updating user information')
 
     user = await UserDA.get(id=user_id)
-    return user
+    return user  # type: ignore
 
 
 @router.delete('/', summary='Deletes user')

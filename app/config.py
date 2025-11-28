@@ -1,18 +1,24 @@
-import os
+from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+ROOT_DIR = Path(__file__).parent.parent
+
 class Settings(BaseSettings):
+    # Postgres settings
     DB_HOST: str
     DB_PORT: int
     DB_NAME: str
     DB_USER: str
     DB_PASSWORD: str
+
+    # for passwords
     SECRET_KEY: str
     ALGORITHM: str
 
     model_config = SettingsConfigDict(
-        env_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '.env')
+        env_file = ROOT_DIR / '.env',
     )
     
 
@@ -28,6 +34,6 @@ def get_db_url():
 
 def get_auth_data():
     return {
-        'secret_key': settings.SECRET_KEY,  # type: ignore
-        'algorithm': settings.ALGORITHM,    # type: ignore
+        'secret_key': settings.SECRET_KEY,
+        'algorithm': settings.ALGORITHM,
     }
