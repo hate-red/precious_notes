@@ -3,12 +3,13 @@ from fastapi import APIRouter, HTTPException, status
 from app.sentiments.schemas import SentimentPublic, SentimentPost, SentimentPut, SentimentDelete
 from app.sentiments.analyzer import SentimentAnalyzer
 from app.sentiments.data_access import SentimentDA
-from app.sentiments.redis import storage
+from app.redis import set_storage
 
 
 router = APIRouter(prefix='/sentiment', tags=['Sentiments'])
-analyzer = SentimentAnalyzer()
 
+analyzer = SentimentAnalyzer()
+storage = set_storage(SentimentPublic)
 
 @router.get('/text/{id}')
 async def get_sentiment(id: int) -> SentimentPublic:

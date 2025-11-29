@@ -3,15 +3,22 @@ from fastapi import APIRouter, HTTPException, status
 from app.summaries.schemas import SummaryPublic, SummaryPost, SummaryUpdate, SummaryDelete
 from app.summaries.summarize import summarize
 from app.summaries.data_access import SummaryDA
+from app.redis import set_storage
 
 
 router = APIRouter(prefix='/summary', tags=['Summaries'])
 
+storage = set_storage(SummaryPublic)
 
 @router.get('/text/{id}')
 async def get_summary(id: int) -> SummaryPublic:
+    instance = await storage.get(str(id))
+    if instance:
+        return instance
+    
     instance = await SummaryDA.get(id=id)
     if instance:
+        _ = await storage.store(str(id), SummaryPublic.model_validate(instance.to_dict()))
         return instance
     
     raise HTTPException(status.HTTP_404_NOT_FOUND)
