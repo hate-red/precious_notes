@@ -1,9 +1,7 @@
 from app.data_access import BaseDA
 from app.sentiments.models import Sentiment
-from app.sentiments.schemas import SentimentPublic
 
-
-def format_instance(instance) -> SentimentPublic:
+def format_instance(instance):
     instance.sentiments = [float(x) for x in instance.sentiments.split()]
     
     return instance

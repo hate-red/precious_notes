@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException, status
 from app.sentiments.schemas import SentimentPublic, SentimentPost, SentimentPut, SentimentDelete
 from app.sentiments.analyzer import SentimentAnalyzer
 from app.sentiments.data_access import SentimentDA
+from app.sentiments.redis import storage
 
 
 router = APIRouter(prefix='/sentiment', tags=['Sentiments'])
@@ -12,13 +13,18 @@ analyzer = SentimentAnalyzer()
 @router.get('/text/{id}')
 async def get_sentiment(id: int) -> SentimentPublic:
     """
-    A function for getting sentiment analyzed text from database by it's id
+    A function for getting sentiment analyzed text 
+    from database by it's id
     """
-
-    instance = await SentimentDA.get(id=id)
+    instance = await storage.get(str(id))
     if instance:
         return instance
-
+    
+    instance = await SentimentDA.get(id=id)
+    if instance:
+        _ = await storage.store(str(id), SentimentPublic.model_validate(instance.to_dict()))
+        return instance
+    
     raise HTTPException(status.HTTP_404_NOT_FOUND)
 
 
@@ -27,7 +33,7 @@ async def analyze_sentiment(request_body: SentimentPost) -> SentimentPublic:
     """
     A function for analyzing sentiment of a given text 
     (if it was not analyzed before)
-    and storing the result of that analyses to database
+    and storing the result of that an# type: ignorealyses to database
     """
 
     instance = await SentimentDA.get(**request_body.model_dump())

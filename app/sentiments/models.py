@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
+from pydantic import ConfigDict
 from typing import Optional
 
 from app.database import Base
@@ -18,10 +19,23 @@ class Sentiment(Base):
     source_text: Mapped[str]
     
     # A string of floats like '0.2 -0.1 0.5 ..'
+    # It is then converted to a list of floats
     sentiments: Mapped[str]
 
     user: Mapped[User] = relationship('User') # type: ignore # noqa: F821
 
+    model_config = ConfigDict(from_attributes=True)
 
-    def __str__(self) -> str:
-        return f'User ID: {self.user_id} | Text: {self.source_text :20}...'
+
+    def to_dict(self) -> dict:
+        return {
+            'id': self.id, 
+            'user_id': self.user_id, 
+            'source_text': self.source_text,
+            'sentiments': self.sentiments,    
+        }
+
+    def __repr__(self) -> str:
+        return f'User ID: {self.user_id} | '\
+               f'Text: {self.source_text :10}...'\
+               f'Sentiments: {self.sentiments[0]}'

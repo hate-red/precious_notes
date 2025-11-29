@@ -18,6 +18,7 @@ dependencies = [
     "python-jose>=3.5.0",
     "razdel>=0.5.0",
     "redis>=7.1.0",
+    "safir[redis]>=4.3.0",
     "scipy>=1.16.3",
     "spacy>=3.8.8",
     "sqlalchemy>=2.0.44",
